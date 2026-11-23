@@ -1,0 +1,33 @@
+# Local dev without Workers AI (needs a Cloudflare login). Lore falls back to built-in names.
+name = "flurry-worker"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ALLOWED_ORIGINS = "http://localhost:5173"
+WALRUS_PUBLISHER = "https://publisher.walrus-testnet.walrus.space"
+WALRUS_AGGREGATOR = "https://aggregator.walrus-testnet.walrus.space"
+WALRUS_EPOCHS = "50"
+
+[[kv_namespaces]]
+binding = "RUNS"
+id = "e757ba9c461c4fce8ff48791422e9a06"
+
+[[durable_objects.bindings]]
+name = "GAS_POOL"
+class_name = "GasPool"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GasPool"]
+
+[[rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm"]
+fallthrough = true
+
+[[rules]]
+type = "Data"
+globs = ["**/*.ttf"]
+fallthrough = true

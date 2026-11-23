@@ -1,0 +1,26 @@
+{
+  "name": "@flurry/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "dev:offline": "wrangler dev -c wrangler.local.toml --port 8787"
+  },
+  "dependencies": {
+    "@flurry/games": "workspace:*",
+    "@flurry/shared": "workspace:*",
+    "@mysten/sui": "^2.39.1",
+    "@resvg/resvg-wasm": "^2.6.2",
+    "hono": "^4.13.19",
+    "@flurry/art": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261118.1",
+    "typescript": "~5.9.0",
+    "vitest": "^5.1.1",
+    "wrangler": "^4.164.0"
+  }
+}

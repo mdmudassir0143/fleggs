@@ -1,0 +1,42 @@
+name = "flurry-worker"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ALLOWED_ORIGINS = "http://localhost:5173,https://flurry-eggs.vercel.app,https://fleggs.online,https://www.fleggs.online"
+# Tried in order; public publishers sometimes run out of WAL, so we fall back to community ones (docs.wal.app/docs/network-reference).
+WALRUS_PUBLISHER = "https://publisher.walrus-testnet.walrus.space,https://walrus-testnet-publisher.nodes.guru,https://walrus-testnet-publisher.stakely.io,https://walrus-testnet-publisher.nodeinfra.com,https://sui-walrus-testnet-publisher.bwarelabs.com,https://testnet-publisher.walrus.graphyte.dev,https://walrus-testnet-publisher.stakecraft.com,https://publisher.walrus.banansen.dev,https://walrus-testnet-publisher.chainbase.online"
+WALRUS_AGGREGATOR = "https://aggregator.walrus-testnet.walrus.space"
+WALRUS_EPOCHS = "50"
+GAS_PAYERS = "Live sponsor=0x6bd67aa62d65a68f5a1af58aa6836ab5ebd69cbac7a35c3e42ca12b793b7f5b0,Local test sponsor=0x5d5e30ac31a4d4b277c95b0f94288276e680a89b48fc14a49109f8893e1fa1fe,Deployer (admin)=0x1b9c08ecd79ca7bff46e05bcb21aeffd9af98ff6dbcd1b3c4bdba8fcac038010"
+MAIL_FROM = "Flurry Eggs <hello@fleggs.online>"
+GOOGLE_CLIENT_ID = "668021284381-ck3l7i4hphg57eevcd0l1ofigck3tmnk.apps.googleusercontent.com"
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "RUNS"
+id = "e757ba9c461c4fce8ff48791422e9a06"
+
+[[durable_objects.bindings]]
+name = "GAS_POOL"
+class_name = "GasPool"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GasPool"]
+
+[[rules]]
+type = "CompiledWasm"
+globs = ["**/*.wasm"]
+fallthrough = true
+
+[[rules]]
+type = "Data"
+globs = ["**/*.ttf"]
+fallthrough = true
+
+[triggers]
+crons = ["*/10 * * * *"]
