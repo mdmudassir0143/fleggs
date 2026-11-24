@@ -1,0 +1,41 @@
+/* Flurry Eggs: Lofi's world — flat sky and clouds, pale ice, thick ink outlines.
+   Ember orange is the only warm colour and always means warmth/progress. */
+
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; margin: 0; }
+body {
+  font-family: var(--body);
+  color: var(--ink);
+  background: var(--sky);
+}
+h1, h2 { font-family: var(--display); margin: 0; line-height: 1.08; text-wrap: balance; }
+h2 { font-size: 24px; font-weight: 600; }
+p { margin: 0; line-height: 1.5; }
+a { color: inherit; }
+
+
+/* Paper grain over everything: keeps the flat vector art from looking clinical. */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: 0.055; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* View Transitions: tabs slide-fade, a den card morphs into its sheet. */
+.camp-stage { view-transition-name: stage; }
+.vt-yeti { view-transition-name: yeti-hero; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .25s; }
+::view-transition-old(stage) { animation: vt-out .22s cubic-bezier(.4,0,1,1) both; }
+::view-transition-new(stage) { animation: vt-in .38s cubic-bezier(.2,.9,.3,1.2) both; }
+::view-transition-group(yeti-hero) { animation-duration: .5s; animation-timing-function: cubic-bezier(.3,1.3,.5,1); }
+@keyframes vt-out { to { opacity: 0; transform: translateY(-10px) scale(.98); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(16px) scale(.98); } }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }
+@media (hover: none), (max-width: 767px) { body::after { display: none; } }
+
+/* The bars stay put during tab transitions: each is its own layer, painted above the moving
+   content (otherwise the 'stage' snapshot draws over the tab bar until the transition ends). */
+.tabbar { view-transition-name: tabbar; }
+.camp-top { view-transition-name: camptop; }
+::view-transition-group(tabbar), ::view-transition-group(camptop) { z-index: 10; animation: none; }
+::view-transition-old(tabbar), ::view-transition-old(camptop) { display: none; }
+::view-transition-new(tabbar), ::view-transition-new(camptop) { animation: none; }

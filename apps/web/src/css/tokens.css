@@ -1,0 +1,26 @@
+/* Design tokens — UX spec §3. Every colour, size and motion value used by the app. */
+:root {
+  --sky: #86c3e8;
+  --snow: #ffffff;
+  --ice: #e3f0f9;
+  --ice-deep: #c9e0f2;
+  --ink: #14213d;
+  --lofi: #5e8fd3;
+  --ember: #e8642c;
+  --ember-soft: #fde3d3;
+  --ember-ink: #c2461a; /* ember for text on white: 5.0:1 */
+  --muted: #3f5568;
+  --display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --line: 3px solid var(--ink);
+  --line-thin: 2px solid var(--ink);
+  --gold: #f4c542;
+  --success: #1e8c6e;
+  --warning: #b26a00;
+  --danger: #b3261e;
+  --r-chip: 12px; --r-btn: 16px; --r-card: 22px; --r-pill: 999px;
+  --e1: 0 3px 0 var(--ink); --e2: 0 5px 0 var(--ink); --e3: 0 8px 0 var(--ink);
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s7: 32px; --s8: 40px; --s9: 56px; --s10: 72px;
+  --focus: 3px solid var(--ember);
+  color-scheme: light;
+}

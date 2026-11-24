@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Flurry Eggs: warm an egg, hatch a yeti on Sui</title>
+    <meta name="description" content="Warm a frozen egg in three mini-game stages, hatch a one-of-a-kind yeti on Sui, train it, merge it and earn real SUI. Free to play, no wallet needed." />
+    <meta name="theme-color" content="#5E97D6" />
+    <link rel="canonical" href="https://www.fleggs.online/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Link previews (WhatsApp, X, Discord, Telegram, iMessage, LinkedIn…) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Flurry Eggs" />
+    <meta property="og:url" content="https://www.fleggs.online/" />
+    <meta property="og:title" content="Flurry Eggs: warm an egg, hatch a yeti on Sui" />
+    <meta property="og:description" content="Play, train, merge and earn real SUI with your own yeti. Free to play, no wallet needed." />
+    <meta property="og:image" content="https://www.fleggs.online/og-card.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Flurry Eggs: a yeti and its eggs in the snow" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Flurry Eggs: warm an egg, hatch a yeti on Sui" />
+    <meta name="twitter:description" content="Play, train, merge and earn real SUI with your own yeti. Free to play, no wallet needed." />
+    <meta name="twitter:image" content="https://www.fleggs.online/og-card.jpg" />
+    <meta name="twitter:image:alt" content="Flurry Eggs: a yeti and its eggs in the snow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Figtree:wght@400;500;600&display=swap" />
+    <style>
+      /* First paint, before any JS: the same egg loader the app shows while it wakes up. */
+      body { margin: 0; }
+      #boot0 { position: fixed; inset: 0; display: grid; place-content: center; justify-items: center; gap: 18px; background: linear-gradient(180deg, #5E97D6 0%, #9CC8EE 60%, #DCEEFB 100%); }
+      #boot0 svg { width: 140px; height: auto; transform-origin: 50% 92%; animation: b0 2.4s ease-in-out infinite; }
+      #boot0 p { margin: 0; font: 700 20px Fredoka, system-ui, sans-serif; color: #14213D; background: rgba(255,255,255,.9); border: 2px solid #14213D; border-radius: 999px; padding: 4px 16px; box-shadow: 0 3px 0 #14213D; }
+      @keyframes b0 { 0%, 100% { transform: rotate(0) translateY(0); } 15% { transform: rotate(-9deg); } 30% { transform: rotate(8deg); } 42% { transform: rotate(-4deg); } 55% { transform: scaleY(.94) scaleX(1.05); } 68% { transform: translateY(-26px) scaleY(1.04); } 82% { transform: scaleY(.96) scaleX(1.03); } }
+      @media (prefers-reduced-motion: reduce) { #boot0 svg { animation: none; } }
+    </style>
+  </head>
+  <body>
+    <div id="root"><div id="boot0" role="status"><svg viewBox="0 0 40 48" aria-hidden="true"><ellipse cx="20" cy="45" rx="11" ry="2.5" fill="#14213D" opacity=".15"/><path d="M20 3c9 0 16 15 16 25s-7 16-16 16S4 38 4 28C4 18 11 3 20 3z" fill="#FBEFE2" stroke="#14213D" stroke-width="2.5"/><circle cx="26" cy="22" r="3" fill="#F3C49E"/><circle cx="14" cy="31" r="4" fill="#F3C49E"/><path d="M12 12c2-4 5-6 8-6" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/></svg><p>Warming up…</p></div></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
