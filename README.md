@@ -10,7 +10,7 @@
 
 ![Sui testnet](https://img.shields.io/badge/Sui-testnet-4DA2FF?style=flat-square)
 ![Move tests](https://img.shields.io/badge/Move_tests-107_passing-2BB393?style=flat-square)
-![TypeScript tests](https://img.shields.io/badge/TS_tests-465_passing-2BB393?style=flat-square)
+![TypeScript tests](https://img.shields.io/badge/TS_tests-456_passing-2BB393?style=flat-square)
 ![Free to play](https://img.shields.io/badge/gas-sponsored-E8642C?style=flat-square)
 
 </div>
@@ -19,23 +19,32 @@
 
 ## Contents
 
+- [Hackathon submission](#hackathon-submission)
 - [What it is](#what-it-is)
 - [How it plays](#how-it-plays)
 - [Earning real SUI](#earning-real-sui)
 - [Invite-only launch](#invite-only-launch)
-- [The admin console](#the-admin-console)
 - [How it works](#how-it-works)
 - [Trust and security](#trust-and-security)
 - [Repository layout](#repository-layout)
 - [Run it locally](#run-it-locally)
 - [Configuration](#configuration)
-- [Deploy](#deploy)
-- [Operating the game](#operating-the-game)
 - [Testnet deployment](#testnet-deployment)
 - [Tests](#tests)
 - [Credits](#credits)
 
 ---
+
+## Hackathon submission
+
+| | |
+|---|---|
+| **Live game** | [fleggs.online](https://www.fleggs.online) |
+| **Network** | Sui testnet |
+| **Package ID** | `0x670212e326f54f24f2676a3c5d9252cad04ddcd8a422cb4eac42f15392923fa8` ([Suiscan](https://suiscan.xyz/testnet/object/0x670212e326f54f24f2676a3c5d9252cad04ddcd8a422cb4eac42f15392923fa8)) |
+| **Sui tech used** | Move objects, zkLogin (Enoki), sponsored transactions, Walrus storage |
+
+This repository holds the game's source: the Move package, the web client, the referee Worker and the shared game, art and chain packages. Internal operations tooling is kept out of it.
 
 ## What it is
 
@@ -59,7 +68,7 @@ Flurry Eggs is a cozy collecting game on Sui. Everything a player owns is a real
 
 ## Earning real SUI
 
-Every shop payment is split three ways: **50% to the buyback reserve**, **30% to the stakers' pot** and **20% to operations**. All three percentages can be changed by the admin.
+Every shop payment is split three ways: **50% to the buyback reserve**, **30% to the stakers' pot** and **20% to operations**. All three percentages are stored on chain in the game config.
 
 | Option | What happens |
 |---|---|
@@ -69,35 +78,21 @@ Every shop payment is split three ways: **50% to the buyback reserve**, **30% to
 
 ## Invite-only launch
 
-The site has two modes, switched from the admin console:
+The site has two modes:
 
 - **Open:** anyone can sign in and play.
-- **Invite-only:** the home button becomes **Join waitlist**. Players join with the Google email they will play with. You approve them in Admin. Each approved player gets a branded **"You're in!"** email from `hello@fleggs.online`, sent through Resend.
+- **Invite-only:** the home button becomes **Join waitlist**. Players join with the Google email they will play with. The team approves them, and each approved player gets a branded **"You're in!"** email from `hello@fleggs.online`, sent through Resend.
 
 Signing in shares the Google email with the game server (the `openid` and `email` scopes). An approved player plays as normal. Anyone else sees **"You're on the waitlist · Waiting for approval"**. Players who joined before invite-only mode stay approved.
 
 The gate is enforced by the game server, not just the screen. While the site is invite-only, the gas sponsor and the score checker refuse any account whose email isn't approved.
-
-## The admin console
-
-Admin is only visible to wallets that hold an on-chain `AdminCap`.
-
-| Tab | What you get |
-|---|---|
-| **Overview** | Player counts (real and test), 7-day activity, the money in each pot, gas pool health with a **runway estimate** ("≈ 2,700 transactions · ~120 days"), top-up actions, pause/resume, recent activity. |
-| **Players** | Every player with their nickname, holdings, SUI and last activity. A detail panel shows their yetis, eggs and transactions, and lets you send gifts or flag test accounts. |
-| **Access** | The Open / Invite-only switch, and the waitlist: waiting, approved and total counts, Approve / Revoke per email, invite by email, and a CSV export. |
-| **Watcher** | On-chain analytics for the last 14 days: wallets created, transactions and failures, active wallets, gas paid, refunded and net, transactions per day, activity by area, top contract calls and the latest transactions, all linked to Suiscan. |
-| **Settings** | Shop prices, extra-play price, revenue split, buyback prices and cap, market fee, staking weights and lock. |
-
-Every admin change is either an on-chain transaction signed by the `AdminCap` holder, or a short message signed by that wallet, which the server checks.
 
 ## How it works
 
 ```mermaid
 flowchart LR
   P[Player browser<br/>React · Phaser · GSAP] -- Google sign-in --> E[Enoki zkLogin]
-  P -- input log --> W[Cloudflare Worker<br/>referee · sponsor · admin]
+  P -- input log --> W[Cloudflare Worker<br/>referee · sponsor]
   W -- replays the run,<br/>signs the score --> P
   P -- signed tx --> W
   W -- adds sponsor gas,<br/>submits --> S[(Sui testnet<br/>Move package)]
@@ -120,7 +115,7 @@ flowchart LR
 - **The sponsor only pays for the game.** Transactions may call Flurry Eggs functions and move the player's own SUI, nothing else. Plain transfers are refused.
 - **The waitlist can't be bypassed.** The Worker checks Google's signature on the sign-in token and asks Enoki which address that token controls, so nobody can claim someone else's email.
 - **Admin actions need the admin key.** They require an `AdminCap` transaction or a fresh signature (within 5 minutes) from a wallet holding one.
-- **No secrets in the repo.** All keys live in Worker secrets and the git-ignored `.dev.vars` and `.superpowers/` folders.
+- **No secrets in the repo.** All keys live in Worker secrets and the git-ignored `.dev.vars` file.
 
 ## Repository layout
 
@@ -128,30 +123,27 @@ flowchart LR
 |---|---|
 | `move/flurry` | Sui Move package: `egg`, `yeti`, `training`, `daily`, `merge`, `shop`, `earn`, `market`, `lodge`, `admin`, `config`, `identity`, `profile`, `onboard`, `attest` |
 | `apps/web` | React 18 + Vite app, with Phaser mini-games and GSAP motion. Deployed on Vercel. |
-| `apps/worker` | Cloudflare Worker (Hono): referee, gas sponsor (a Durable Object coin pool), lore and cards, waitlist and access, admin APIs, Watcher, cron |
+| `apps/worker` | Cloudflare Worker (Hono): referee, gas sponsor (a Durable Object coin pool), lore and cards, waitlist and access, cron |
 | `packages/games` | Deterministic game simulations, shared by the browser and the referee, plus the Phaser scenes |
 | `packages/shared` | Contract IDs, BCS types, chain readers |
 | `packages/art` | Yeti, egg and card art (SVG) |
-| `scripts` | Publish and upgrade scripts, plus live testnet bots (`smoke-*.ts`) |
-| `docs/superpowers` | Design specs and implementation plans |
 
 **Stack:** Sui Move · TypeScript 5.9 · React 18 · Vite 8 · Phaser 3.90 · GSAP 3 · `@mysten/sui` 2 · dApp Kit · Enoki · Hono · Cloudflare Workers, KV and Durable Objects · Workers AI · Walrus · Resend · Vitest
 
 ## Run it locally
 
-You need Node 22, pnpm 9, the [Sui CLI](https://docs.sui.io) and a Cloudflare account.
+You need Node 22, pnpm 9, the [Sui CLI](https://docs.sui.io) and a Cloudflare account. Create two Ed25519 keys (`sui keytool generate ed25519`) for the referee and the gas sponsor, and put them in `apps/worker/.dev.vars` (see [Configuration](#configuration)).
 
 ```bash
 pnpm install
 pnpm test                         # every TypeScript package
 pnpm move:test                    # Move tests
 
-npx tsx scripts/gen-keys.ts       # referee + sponsor keys → .superpowers/keys/ (git-ignored)
 pnpm --filter @flurry/worker dev  # http://localhost:8787 (reads apps/worker/.dev.vars)
 pnpm --filter @flurry/web dev     # http://localhost:5173 (reads apps/web/.env.local)
 ```
 
-The web app can point at the local Worker or the live one. Set `VITE_WORKER_URL` to choose. The Admin header shows which server it's reading.
+The web app can point at the local Worker or the live one. Set `VITE_WORKER_URL` to choose.
 
 ## Configuration
 
@@ -173,24 +165,7 @@ The web app can point at the local Worker or the live one. Set `VITE_WORKER_URL`
 | `RESEND_API_KEY` | Sends invite emails |
 | `ADMIN_TOKEN` | Protects the gas-pool seed endpoint |
 
-**Worker vars** (`apps/worker/wrangler.toml`): `ALLOWED_ORIGINS`, `GOOGLE_CLIENT_ID`, `MAIL_FROM`, `GAS_PAYERS` (extra gas payers to include in Watcher, as `Label=0x…`), and the `WALRUS_*` settings.
-
-## Deploy
-
-| Piece | How |
-|---|---|
-| Contract | `scripts/publish.sh` for a fresh publish, `scripts/upgrade.sh` for an upgrade. Then record the new IDs in `packages/shared/src/deployments.ts`. |
-| Worker | `pnpm --filter @flurry/worker deploy` (secrets set once with `wrangler secret put`) |
-| Web | Vercel project with root `apps/web` and the Vite preset. Every push to `main` deploys. |
-| Domain | `fleggs.online` → Vercel. Add the site's address to the Google OAuth client, to Enoki's allowed origins and to `ALLOWED_ORIGINS`. |
-| Email | Verify the domain in Resend (DKIM, SPF and DMARC records at the DNS provider). |
-
-## Operating the game
-
-- **Gas pool.** Health shows the pool, the spare SUI and the runway estimate. To top up, use **Send SUI** to the sponsor, then **Add coins to the pool**, which splits spare SUI into 0.25 SUI coins. Each coin pays for one transaction at a time.
-- **Invite-only.** Use **Access → Invite-only**, approve emails, and download the list as CSV whenever you like.
-- **Health of the game.** **Watcher** shows what is happening on chain. **Pause the game** stops play in an emergency.
-- **Admin keys.** The deployer holds the original `AdminCap` and can issue more with `config::issue_admin_cap`.
+**Worker vars** (`apps/worker/wrangler.toml`): `ALLOWED_ORIGINS`, `GOOGLE_CLIENT_ID`, `MAIL_FROM`, and the `WALRUS_*` settings.
 
 ## Testnet deployment
 
@@ -211,13 +186,13 @@ All IDs live in [`packages/shared/src/deployments.ts`](packages/shared/src/deplo
 | Suite | Tests |
 |---|---|
 | Move (`move/flurry`) | 107 |
-| Web (`apps/web`) | 241 |
-| Worker (`apps/worker`) | 120 |
+| Web (`apps/web`) | 243 |
+| Worker (`apps/worker`) | 109 |
 | Games (`packages/games`) | 36 |
 | Art (`packages/art`) | 36 |
 | Shared (`packages/shared`) | 32 |
 
-There are also live testnet bots in `scripts/smoke-*.ts` covering hatching, training, merging, earning and the warming journey.
+Run them with `pnpm test` and `pnpm move:test`.
 
 ## Credits
 
